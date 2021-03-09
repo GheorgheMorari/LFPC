@@ -91,7 +91,7 @@ class Automata(Graph):
                 current_dict[condition] = new_state
                 self.fill_table(table, new_state)
 
-    def show(self, filename):
+    def show(self, filename, usegraphwiz=True):
         # Morari Gheorghe FAF-192
         stream = open(filename, "w")
         print("digraph  {", file=stream)
@@ -106,9 +106,11 @@ class Automata(Graph):
                 print(link.src_id + " -> " + link.dst_id + "[label=" + link.condition + "];", file=stream)
         print("}", file=stream)
         stream.close()
-        from graphviz import Source
-        s = Source.from_file(filename)
-        s.view()
+
+        if usegraphwiz:
+            from graphviz import Source
+            s = Source.from_file(filename)
+            s.view()
 
 
 def get_states(node_id, links, condition):
