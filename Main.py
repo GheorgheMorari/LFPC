@@ -8,7 +8,7 @@ from Node import Node
 
 def main():
     # Open stream
-    stream = open("NFA.txt", "r")
+    stream = open("Resources/NFA.txt", "r")
 
     # Read from file
     AF = (re.search('\((.*)\)', (stream.readline()))).group(1).replace(' ', '').split(',')
@@ -43,9 +43,9 @@ def main():
 
     # Morari Gheorghe FAF-192
     print(automata.run('bbbbab'))
-    automata.show("nfa.dot")
+    automata.show("Resources/nfa.dot")
     automata.make_dfa()
-    automata.show("dfa.dot")
+    automata.show("Resources/dfa.dot")
     print(automata.run('bbbbab'))
 
 
