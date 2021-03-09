@@ -43,9 +43,9 @@ def main():
 
     # Morari Gheorghe FAF-192
     print(automata.run('bbbbab'))
-    automata.show()
+    automata.show("nfa.dot")
     automata.make_dfa()
-    automata.show()
+    automata.show("dfa.dot")
     print(automata.run('bbbbab'))
 
 

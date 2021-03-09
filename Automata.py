@@ -1,3 +1,5 @@
+from networkx.drawing.nx_pydot import write_dot
+
 from Graph import Graph
 from Link import get_links, Link
 from Node import get_node, Node
@@ -89,46 +91,24 @@ class Automata(Graph):
                 current_dict[condition] = new_state
                 self.fill_table(table, new_state)
 
-    def show(self):
+    def show(self, filename):
         # Morari Gheorghe FAF-192
-        G = nx.DiGraph(directed=True)
-        node_labels = {}
+        stream = open(filename, "w")
+        print("digraph  {", file=stream)
         for node in self.nodes:
-            G.add_node(node.id)
-            node_labels[node.id] = node.id
-        edge_labels = {}
-        for node in self.nodes:
-            for link in node.links:
-                G.add_edge(link.src_id, link.dst_id)
-                edge_labels[(link.src_id, link.dst_id)] = link.condition
-
-        print(G.nodes())
-        print(G.edges())
-        options = {
-            'node_color': 'yellow',
-            'node_size': 1000,
-            'width': 3,
-            'arrowstyle': '-|>',
-            'arrowsize': 12,
-        }
-        pos = nx.circular_layout(G)
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-        nx.draw_networkx_labels(G, pos, labels=node_labels)
-        nx.draw(G, pos, **options )
-
-        self_loops = []
+            if node.id in self.terminal_ids:
+                print(node.id + " [peripheries=2];", file=stream)
+            else:
+                print(node.id + ";", file=stream)
+        print("start -> " + self.starting_id + ";", file=stream)
         for node in self.nodes:
             for link in node.links:
-                if link.src_id == link.dst_id:
-                    edge_labels[(link.src_id, link.dst_id)] = link.condition
-                    self_loops.append((link.src_id, link.dst_id))
-
-        G.add_edges_from(self_loops)
-        nx.draw_networkx_edges(G, pos, edgelist=self_loops, arrowstyle="<|-", style="dashed")
-
-
-
-        plt.show()
+                print(link.src_id + " -> " + link.dst_id + "[label=" + link.condition + "];", file=stream)
+        print("}", file=stream)
+        stream.close()
+        from graphviz import Source
+        s = Source.from_file(filename)
+        s.view()
 
 
 def get_states(node_id, links, condition):
