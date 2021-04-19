@@ -1,0 +1,12 @@
+S A B C E
+a b d
+S dB
+S B
+A d
+A dS
+A aAdCB
+B aC
+B bA
+B AC
+C ε
+E AS
