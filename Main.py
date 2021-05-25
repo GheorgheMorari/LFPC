@@ -208,23 +208,87 @@ def get_grammar(filename):
     return [grammar, vn, vt]
 
 
+def first(character, grammar, vn, vt):
+    if character in vt:
+        return [character]
+    if character in vn:
+        ret = []
+        for production in grammar[character]:
+            frst = first(production[0], grammar, vn, vt)
+            for result in frst:
+                if result not in ret:
+                    ret.append(result)
+        return ret
+    return ['ε']
+
+
+def follow(character, grammar, vn, vt):
+    if character == 'S':
+        return ['$']
+
+    ret = []
+    if character in vn:
+        for key, value in grammar.items():
+            for production in value:
+                if character in production:
+                    index = production.index(character)
+                    result_list = []
+                    if index >= len(production) - 1:
+                        if key != character:
+                            result_list = follow(key, grammar, vn, vt)
+                    else:
+                        result_list = first(production[index + 1], grammar, vn, vt)
+
+                    for result in result_list:
+                        result = result.replace('ε', '')
+                        if result not in ret and result != '':
+                            ret.append(result)
+    return ret
+
+
+def get_table(grammar, vn, vt):
+    ret = {}
+    vt.append('$')
+    vt.append('ε')
+    for terminal in vt:
+        for not_terminal in vn:
+            result_list = first(not_terminal, grammar, vn, vt)
+            for result in result_list:
+                if result == 'ε':
+                    result_list2 = follow(not_terminal, grammar, vn, vt)
+                    for result2 in result_list2:
+                        if result2 == terminal:
+                            ret[(terminal, not_terminal)] = grammar[not_terminal]
+                if result == terminal or result == 'ε':
+                    ret[(terminal, not_terminal)] = grammar[not_terminal]
+    return ret
+
+
 def main():
     [grammar, vn, vt] = get_grammar("grammar.txt")
-    grammar = remove_epsilon(grammar)
-    print("removed epsilon")
-    print_grammar(grammar)
-    grammar = remove_renaming(grammar)
-    print("removed renaming")
-    print_grammar(grammar)
-    grammar = remove_inaccessible(grammar)
-    print("removed inaccessible")
-    print_grammar(grammar)
-    grammar = remove_unproductive(grammar)
-    print("removed unproductive")
-    print_grammar(grammar)
-    grammar = convert_chomsky(grammar, vn, vt)
-    print("converted to chomsky normal form")
-    print_grammar(grammar)
+
+    a = first('D', grammar, vn, vt)
+    # a = follow('F', grammar, vn, vt)
+
+    table = get_table(grammar, vn, vt)
+    for key, val in table.items():
+        print(key,val)
+
+    # grammar = remove_epsilon(grammar)
+    # print("removed epsilon")
+    # print_grammar(grammar)
+    # grammar = remove_renaming(grammar)
+    # print("removed renaming")
+    # print_grammar(grammar)
+    # grammar = remove_inaccessible(grammar)
+    # print("removed inaccessible")
+    # print_grammar(grammar)
+    # grammar = remove_unproductive(grammar)
+    # print("removed unproductive")
+    # print_grammar(grammar)
+    # grammar = convert_chomsky(grammar, vn, vt)
+    # print("converted to chomsky normal form")
+    # print_grammar(grammar)
 
 
 main()

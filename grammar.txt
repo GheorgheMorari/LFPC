@@ -1,12 +1,10 @@
-S A B C E
-a b d
-S dB
-S B
-A d
-A dS
-A aAdCB
-B aC
-B bA
-B AC
-C ε
-E AS
+S A F E D X
+a b c d e
+S E
+E FcA
+A b
+A dD
+D Fe
+F aX
+X ε
+X baX
