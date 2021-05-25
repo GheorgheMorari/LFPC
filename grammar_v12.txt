@@ -1,0 +1,9 @@
+S A B C D
+a b c d h f g
+S Cf
+C abB
+B Dc
+D A
+D gA
+A d
+A h
